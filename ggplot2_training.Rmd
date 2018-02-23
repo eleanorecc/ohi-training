@@ -3,12 +3,19 @@ title: "ggplot2_training"
 output: html_document
 ---
 
+
+Install tidyverse and ggthemes packages first if needed, then load the libraries
+
+
 ```{r setup, include=FALSE}
 
 library(tidyverse)
 
 knitr::opts_chunk$set(echo = TRUE, message = TRUE)
 ```
+
+## Introduction
+
 
 * ggplot is the data visualization package
 * based on *grammar of graphics*
@@ -41,6 +48,8 @@ car_plot + geom_point()
 ```
 
 Remember, the "+" sign must be at the end of the line, cannot be at beginning of new indented line
+
+## Different Formatting
 
 ```{r}
 ggplot(data = mpg, aes(x = displ, y = hwy)) +
@@ -85,18 +94,199 @@ ggplot(data = mpg) + geom_point(aes(x = displ, y = hwy, color = displ < 5 & hwy 
 
 Can map aesthetics to something other than a variable name; can map to a condition on variable
 
+## Faceting
+
+Faceting allows to split dataset based on characteristics of the dataset
+
+```{r}
+ggplot(data = mpg) +
+  geom_point(aes(x = displ, y = hwy)) + 
+  facet_wrap(~ manufacturer)
+```
+```{r}
+ggplot(data = mpg) +
+  geom_point(aes(x = displ, y = hwy, color = class), alpha = 0.4) + 
+  facet_wrap(~ manufacturer)
+```
+Same graph as above but without grey background, by adding a "theme":
+
+```{r}
+ggplot(data = mpg) +
+  geom_point(aes(x = displ, y = hwy, color = class)) + 
+  facet_wrap(~ manufacturer) + 
+  theme_bw()
+```
+
+[Introduction to ggthemes] [https://cran.r-project.org/web/packages/ggthemes/vignettes/ggthemes.html]
+
+```{r}
+
+library(ggthemes)
+
+```
+
+```{r}
+
+ggplot(data = mpg) +
+  geom_point(aes(x = displ, y = hwy, color = class)) + 
+  facet_wrap(~ manufacturer) +
+  theme_excel()
+```
+
+
+## Playing with Geoms_
+
+```{r}
+ggplot(data = mpg, aes(x = drv, y = hwy)) + 
+  geom_jitter()
+```
+
+
+```{r}
+ggplot(data = mpg, aes(x = drv, y = hwy)) + 
+  geom_boxplot()
+```
+
+```{r}
+ggplot(data = mpg, aes(x = drv, y = hwy)) + 
+  geom_violin()
+```
+
+
+Using multiple kinds of geoms on one plot
+
+```{r}
+ggplot(data = mpg, aes(x = displ, y = hwy)) + 
+  geom_point() +
+  geom_smooth()
+```
+
+Editing formatting/style of plots by geom_
+
+```{r}
+ggplot(data = mpg, aes(x = displ, y = hwy)) + 
+  geom_point(aes(color = class)) +
+  geom_smooth(color = "black") + 
+  theme_minimal() + 
+  theme(legend.title=element_blank(), legend.position = "bottom") +
+  ggtitle("Relationship Between Engine Size and Miles Per Gallon (MPG)") +
+  xlab("Highway MPG") + ylab("Engine Displacement (Liters)")
+```
+```{r}
+ggplot(data = mpg, aes(x = displ, y = hwy)) + 
+  geom_point(aes(color = class)) +
+  geom_smooth(color = "black") + 
+  theme_minimal() + 
+  theme(legend.title=element_blank(), legend.position = "bottom") +
+  labs(title = "Relationship Between Engine Size and Miles Per Gallon (MPG)", x = "Highway MPG", y = "Engine Displacement (Liters)")
+```
+
+## Bar Charts
+
+
+Default of bar charts is "count" type; histograms etc bin data how you tell it to and then count within the bins
+
+
+```{r}
+ggplot(data = mpg) +
+  geom_bar(aes(x = fl, fill = fl))
+  
+```
+
+
+Color aesthetic acts on the line, while fill acts on the full bar
+
+Color and x-axes categories are redundant in graph above; visualizing fuel type by class is more interesting - automatically creates a stacked bar chart
+
+```{r}
+ggplot(data = mpg) +
+  geom_bar(aes(x = fl, fill = class))
+  
+```
 
 
 
+To look at proportion rather than count, can use the position = "fill"
 
 
 
+```{r}
+ggplot(data = mpg) +
+  geom_bar(aes(x = fl, fill = class), position = "fill")
+  
+```
 
 
+```{r}
+ggplot(data = mpg) +
+  geom_bar(aes(x = fl, fill = class), position = "dodge")
+  
+```
+
+To add meaningful labels...
+
+```{r}
+ggplot(data = mpg) +
+  geom_bar(aes(x = fl, fill = class), position = "dodge") +
+  theme_bw() +
+  scale_x_discrete(labels = c("CNG", "Diesel", "Ethanol", "Premium", "Regular")) + 
+  labs(x = "\n Fuel Type", y = "Number of Cars \n")
+  
+```
+
+**Picking a Color Palette!**
+
+scale_fill_brewer:
+
+```{r}
+ggplot(data = mpg) +
+  geom_bar(aes(x = fl, fill = class), position = "dodge") +
+  theme_bw() +
+  scale_x_discrete(labels = c("CNG", "Diesel", "Ethanol", "Premium", "Regular")) + 
+  labs(x = "\n Fuel Type", y = "Number of Cars \n") + 
+  scale_fill_brewer(palette = "Blues")
+   
+```
+
+To view palettes from RColorBrewer:
+
+```{r}
+RColorBrewer::display.brewer.all()
+```
 
 
+```{r}
+ggplot(data = mpg) +
+  geom_bar(aes(x = fl, fill = class), position = "dodge") +
+  theme_bw() +
+  scale_x_discrete(labels = c("CNG", "Diesel", "Ethanol", "Premium", "Regular")) + 
+  labs(x = "\n Fuel Type", y = "Number of Cars \n") + 
+  scale_fill_brewer(palette = "Set3")
+   
+```
+
+## Saving GGPlots as Images
+
+Using ggsave()
+
+1. name your plot
+2. use ggsave(what to save as filename, name of thing to save, width = number, length = number)
+
+```{r}
+myplot <- ggplot(data = mpg) +
+  geom_bar(aes(x = fl, fill = class), position = "dodge") +
+  theme_bw() +
+  scale_x_discrete(labels = c("CNG", "Diesel", "Ethanol", "Premium", "Regular")) + 
+  labs(x = "\n Fuel Type", y = "Number of Cars \n") + 
+  scale_fill_brewer(palette = "Set3")
+
+ggsave("my_ggplot.pdf", myplot, width = 5, height = 6)
+
+```
 
 
+PDFs are much smaller files, and often easier to work with than PNGs.
+Can define the resolution (dpi) with ggsave as well.
 
 
 
