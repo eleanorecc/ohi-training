@@ -4,5 +4,72 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = TRUE, message = TRUE)
 ```
+
+* ggplot is the data visualization package
+* based on *grammar of graphics*
+
+* data via geom -> coordinate system -> plot...
+
+```{r}
+mpg
+```
+
+Shortcut for inserting code chunk in Rmd: alt-command-I
+Can learn more about datasets in R by typing "?datasetname"
+
+Arguements for ggplot: data, aesthetics (what to plot on axes); need to use a geom_ to tell ggplot *how* to plot
+
+```{r}
+ggplot(data = mpg, aes(x = displ, y = hwy)) + geom_point()
+```
+
+```{r}
+#assign this plot to a variable
+
+car_plot <- ggplot(data = mpg, aes(displ, hwy))
+```
+
+Can use this approach to use same set up to do multiple plots
+
+```{r}
+car_plot + geom_point()
+```
+
+Remember, the "+" sign must be at the end of the line, cannot be at beginning of new indented line
+
+```{r}
+ggplot(data = mpg, aes(x = displ, y = hwy)) +
+  geom_point(alpha = 0.4)
+```
+
+Alpha adds transparency to the plotted data; this allows us to see that there are actually points stacked on top of each other here!
+
+Another thing you can do is add color:
+
+```{r}
+ggplot(data = mpg, aes(x = displ, y = hwy)) + 
+  geom_point(aes(color = class))
+```
+
+The "aes(color = class)" tells ggplot we want the points colored by the "class" of car
+
+ggplot has a limited number of default shapes
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(aes(x = displ, y = hwy, shape = class))
+```
+
+Specifying x and y in aesthetics in the ggplot() portion essentially names them as global aesthetics, and unless specify x and y in geom_ aes() arguements, will use those global specifications
+
+```{r}
+ggplot(data = mpg, aes(x = hwy, y = cty)) +
+  geom_point(aes(size = class, color = fl))
+```
+
+
