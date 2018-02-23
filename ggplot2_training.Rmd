@@ -72,4 +72,33 @@ ggplot(data = mpg, aes(x = hwy, y = cty)) +
   geom_point(aes(size = class, color = fl))
 ```
 
+```{r}
+ggplot(data = mpg) +
+  geom_point(aes(x = hwy, y = cty), color = "blue", alpha = 0.4)
+```
+
+If inside the aes(), saying to look at something within the data; patterns. Outside the aes() is just generally plot style formatting
+
+```{r}
+ggplot(data = mpg) + geom_point(aes(x = displ, y = hwy, color = displ < 5 & hwy <25 ))
+```
+
+Can map aesthetics to something other than a variable name; can map to a condition on variable
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
