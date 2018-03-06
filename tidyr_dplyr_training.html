@@ -574,12 +574,77 @@ str(x)</code></pre>
 ## 10 Iraq                   65.0
 ## # ... with 23 more rows</code></pre>
 </div>
-<div id="other-random-notes-from-training-session" class="section level3">
-<h3>Other random notes from training session…</h3>
+</div>
+</div>
+<div id="joining-datasets" class="section level1">
+<h1>Joining Datasets</h1>
+<p>Combining datasets into one dataframe so can streamline analysis: Relational data/Joining data</p>
+<p>Might be different ways in which you want to combine data</p>
+<ul>
+<li>Non-matching colunms (like arcgis join)</li>
+<li>Non-matching observations (like arcgis merge)</li>
+</ul>
+<p>Ask yourself: what do you want to keep?</p>
+<p>If want to merge additional observations with some differences in included variables, may end up with NAs</p>
+<ul>
+<li>Left-Join: join matching rows from B to A, keeping all observations from table A</li>
+<li>Right-Join: joing mtatching rows from A to B, keeping all observations from table B</li>
+<li>Inner-Join: Retain only rows in both sets; might result in some lost data</li>
+<li>Full-Join: Retain all values, all rows; can later filter out all rows with NAs in second step after viewing NAs</li>
+</ul>
+<pre class="r"><code>co2 &lt;- read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/co2.csv') # read in CO2 data</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   country = col_character(),
+##   co2_2007 = col_double()
+## )</code></pre>
+<pre class="r"><code>co2 %&gt;% head() # shows in rmd the first 6 rows of the co2 data</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   country        co2_2007
+##   &lt;chr&gt;             &lt;dbl&gt;
+## 1 Afghanistan      2938  
+## 2 Albania          4218  
+## 3 Algeria        105838  
+## 4 American Samoa     18.4
+## 5 Angola          17405  
+## 6 Anguilla           12.4</code></pre>
+<pre class="r"><code>gap_2007 &lt;- gapminder %&gt;% 
+  filter(year == 2007)
+
+lj &lt;- left_join(gap_2007, co2, by = &quot;country&quot;) # join the co2 data to the gap2007 subset by the country variable, i.e. match by looking at the country names
+lj %&gt;% summary() # can see from the summary that there are 135 NAs out of 142 observations in the left join dataframe</code></pre>
+<pre><code>##    country               year           pop             continent        
+##  Length:142         Min.   :2007   Min.   :1.996e+05   Length:142        
+##  Class :character   1st Qu.:2007   1st Qu.:4.508e+06   Class :character  
+##  Mode  :character   Median :2007   Median :1.052e+07   Mode  :character  
+##                     Mean   :2007   Mean   :4.402e+07                     
+##                     3rd Qu.:2007   3rd Qu.:3.121e+07                     
+##                     Max.   :2007   Max.   :1.319e+09                     
+##                                                                          
+##     lifeExp        gdpPercap          co2_2007     
+##  Min.   :39.61   Min.   :  277.6   Min.   :  2938  
+##  1st Qu.:57.16   1st Qu.: 1624.8   1st Qu.: 10811  
+##  Median :71.94   Median : 6124.4   Median : 75961  
+##  Mean   :67.01   Mean   :11680.1   Mean   :115407  
+##  3rd Qu.:76.41   3rd Qu.:18008.8   3rd Qu.:140686  
+##  Max.   :82.60   Max.   :49357.2   Max.   :425957  
+##                                    NA's   :135</code></pre>
+<pre class="r"><code>rj &lt;- right_join(gap_2007, co2, by = &quot;country&quot;)
+head(rj)</code></pre>
+<pre><code>## # A tibble: 6 x 7
+##   country         year      pop continent lifeExp gdpPercap co2_2007
+##   &lt;chr&gt;          &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Afghanistan     2007 31889923 Asia         43.8       975   2938  
+## 2 Albania         2007  3600523 Europe       76.4      5937   4218  
+## 3 Algeria         2007 33333216 Africa       72.3      6223 105838  
+## 4 American Samoa    NA       NA &lt;NA&gt;         NA          NA     18.4
+## 5 Angola          2007 12420476 Africa       42.7      4797  17405  
+## 6 Anguilla          NA       NA &lt;NA&gt;         NA          NA     12.4</code></pre>
+<div id="other-random-notes-from-training-session" class="section level2">
+<h2>Other random notes from training session…</h2>
 <p>Shortcut: control-alt-m opens commit window for github</p>
 <p>If forget pipe operator and don’t see right away can reindent lines (“Code” &gt; “Reindent Lines”), shortcut: command I</p>
 <p>Command-arrow to jump to the end of the code line</p>
-</div>
 </div>
 </div>
 

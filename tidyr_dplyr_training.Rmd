@@ -211,6 +211,41 @@ gapminder %>%
 ```
 
 
+# Joining Datasets
+
+Combining datasets into one dataframe so can streamline analysis: Relational data/Joining data
+
+Might be different ways in which you want to combine data
+
+* Non-matching colunms (like arcgis join)
+* Non-matching observations (like arcgis merge)
+
+Ask yourself: what do you want to keep?
+
+If want to merge additional observations with some differences in included variables, may end up with NAs
+
+* Left-Join: join matching rows from B to A, keeping all observations from table A
+* Right-Join: joing mtatching rows from A to B, keeping all observations from table B
+* Inner-Join: Retain only rows in both sets; might result in some lost data
+* Full-Join: Retain all values, all rows; can later filter out all rows with NAs in second step after viewing NAs
+
+
+```{r}
+co2 <- read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/co2.csv') # read in CO2 data
+co2 %>% head() # shows in rmd the first 6 rows of the co2 data
+
+gap_2007 <- gapminder %>% 
+  filter(year == 2007)
+
+lj <- left_join(gap_2007, co2, by = "country") # join the co2 data to the gap2007 subset by the country variable, i.e. match by looking at the country names
+lj %>% summary() # can see from the summary that there are 135 NAs out of 142 observations in the left join dataframe
+
+
+rj <- right_join(gap_2007, co2, by = "country")
+head(rj)
+
+
+```
 
 
 
@@ -221,8 +256,7 @@ gapminder %>%
 
 
 
-
-### Other random notes from training session...
+## Other random notes from training session...
 
 Shortcut: control-alt-m opens commit window for github
 
