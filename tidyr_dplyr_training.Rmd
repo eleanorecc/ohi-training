@@ -6,4 +6,114 @@ output: html_document
 ---
 
 
+### Data Wrangling with dplyr
+
+
+Data scientist spend too much time, about 50-80% of time doing collection and prep of data before useful exploration! 
+
+Using tidyverse in R --> manipulating columns and rows
+
+Wrangling is part of the "transform" or "tidy" phase of data analysis workflow
+
+What is the difference between tidying and transforming?
+
+### What is tidy data?
+
+* Each variable in its own column
+* Each observation saved in its own row
+
+### The Tidyverse
+
+A suite of R packages for data wrangling
+
+
+
+***
+
+# Gapminder Wrangle
+
+We're going to wrangle gapminder data using `dplyr`.
+
+```{r}
+library(tidyverse) # install.packages('tidyverse') if get error saying package not found when this is run
+```
+
+When run "library(tidyverse)" get warning messages about functions masked by tidyverse
+
+Will be using gapminder data from OHI-Science/data-science-training
+Want raw csv data, can click "raw" tab and copy URL (https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv)
+
+
+```{r}
+# read in dataset from url:
+
+gapminder <- read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv')
+
+# returns message about how data is parsed, i.e. was each column read as a string or as an integer, or as a double
+```
+
+
+## Explore Dataframe as a Whole:
+```{r}
+head(gapminder) # shows first 6 rows by default, but can specify more rows by including an additional parameter
+tail(gapminder, 15)
+
+str(gapminder) # structure of gapminder, gives information about dataframe; helpful to see what class each variable is so can determine whether can use different types of functions
+names(gapminder) # tells us the column (variable) names
+
+dim(gapminder) # tells the dimensions of the dataframe: number rows by number of columns
+nrow(gapminder) # number of rows
+ncol(gapminder) # number of columns
+
+```
+
+
+Most functions adn packages will expect your data to be in a dataframe; usually by default, data is read into a dataframe
+
+Dataframes are awesome because they can contain both characters and numbers
+
+Tibbles and tibble dataframes (`tbl` or `tbl_df`) are dataframes which can also contain other dataframes or things like ggplot
+
+The function `c()` combines things into a list or a vector -- "combine" function
+
+Tidyverse tries to keep everything consistent; if one class goes in, returns an object of the same class
+
+
+## Summary Statistics for Dataframe:
+```{r}
+summary(gapminder) # for numeric values will return min median mean max and quartiles; for character vars will tell you it is a character class an the length
+
+library(skimr) # run install.package('skimr') if have error 'package not found'
+skim(gapminder) # cool package to look at data 'at a glance' and plays nicely with other tidyverse packages
+
+
+```
+
+## Explore Inside the Dataframe
+
+```{r}
+# gapminder$lifeExp gives information just for the single column in the dataframe, called "lifeExp" -- returns the entire column...
+head(gapminder$lifeExp) # output is shown in integer vector
+str(gapminder$lifeExp) # not esspecially enlightening looking at structure of just one column...
+```
+
+
+## Dplyr Basics:
+
+* `filter()` subsets data by rows
+* `select()` selects columns (i.e. variables)
+* `mutate()` adds a variable based on other columns
+* `summarize()` collapses many columns' values into a single new columnn
+
+Will always return a dataframe
+
+Work similarly, programatically
+
+Can be strung together
+
+
+
+
+
+
 
