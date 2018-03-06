@@ -111,7 +111,45 @@ Work similarly, programatically
 
 Can be strung together
 
+```{r}
 
+# Filter:
+
+filter(gapminder, lifeExp <29) # want to filter to look at where life expectancy is less than 29 years old; filter based on condition specified in second arguement of the function
+filter(gapminder, country == "Mexico")
+filter(gapminder, country %in% c("Mexico", "Chile"))
+filter(gapminder, country == "Mexico" | country == "Chile") # does the same thing as above
+
+# Select:
+
+select(gapminder, year, lifeExp) # select just the year and life expectancy columns
+select(gapminder, -continent, -lifeExp) # can use minus to deselect certain columns
+
+# Combining Select and Filter
+
+gap_cambodia <- filter(gapminder, country == "Cambodia") # filter the country from Cambodia 
+gap_cambodia_2 <- select(gap_cambodia, -continent, -lifeExp) # and remove continent and life expectancy columns..
+gap_cambodia_2 # view results
+
+```
+
+## Pipe Operator!
+
+Life-changing pipe operator is the %>%, and the keyboard shortcut is shift-command-n
+
+Essentially like saying "and then"
+
+This allows you to string together a bunch of functions, and have fewer intermediate variables
+
+Tell it up front what data you will be using; that is carried throughout the next specified operations strung together with pipe operators
+
+```{r}
+gapminder %>% head() # equivalent to head(gapminder)
+gapminder %>% head(3) # take gapminder data, and then return the first three rows; no longer need to specify the datam, because that is announced up front
+
+gap_cambodia <- gapminder %>% filter(country == "Cambodia") %>% select(-continent, -lifeExp) # this is same as what we did above, but is cleaner since data is announced upfront and then operations are chained
+gap_cambodia
+```
 
 
 

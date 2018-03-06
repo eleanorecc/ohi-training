@@ -310,6 +310,153 @@ head(gapminder$lifeExp) # output is shown in integer vector</code></pre>
 <p>Will always return a dataframe</p>
 <p>Work similarly, programatically</p>
 <p>Can be strung together</p>
+<pre class="r"><code># Filter:
+
+filter(gapminder, lifeExp &lt;29) # want to filter to look at where life expectancy is less than 29 years old; filter based on condition specified in second arguement of the function</code></pre>
+<pre><code>## # A tibble: 2 x 6
+##   country      year     pop continent lifeExp gdpPercap
+##   &lt;chr&gt;       &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Afghanistan  1952 8425333 Asia         28.8       779
+## 2 Rwanda       1992 7290203 Africa       23.6       737</code></pre>
+<pre class="r"><code>filter(gapminder, country == &quot;Mexico&quot;)</code></pre>
+<pre><code>## # A tibble: 12 x 6
+##    country  year       pop continent lifeExp gdpPercap
+##    &lt;chr&gt;   &lt;int&gt;     &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Mexico   1952  30144317 Americas     50.8      3478
+##  2 Mexico   1957  35015548 Americas     55.2      4132
+##  3 Mexico   1962  41121485 Americas     58.3      4582
+##  4 Mexico   1967  47995559 Americas     60.1      5755
+##  5 Mexico   1972  55984294 Americas     62.4      6809
+##  6 Mexico   1977  63759976 Americas     65.0      7675
+##  7 Mexico   1982  71640904 Americas     67.4      9611
+##  8 Mexico   1987  80122492 Americas     69.5      8688
+##  9 Mexico   1992  88111030 Americas     71.5      9472
+## 10 Mexico   1997  95895146 Americas     73.7      9767
+## 11 Mexico   2002 102479927 Americas     74.9     10742
+## 12 Mexico   2007 108700891 Americas     76.2     11978</code></pre>
+<pre class="r"><code>filter(gapminder, country %in% c(&quot;Mexico&quot;, &quot;Chile&quot;))</code></pre>
+<pre><code>## # A tibble: 24 x 6
+##    country  year      pop continent lifeExp gdpPercap
+##    &lt;chr&gt;   &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Chile    1952  6377619 Americas     54.7      3940
+##  2 Chile    1957  7048426 Americas     56.1      4316
+##  3 Chile    1962  7961258 Americas     57.9      4519
+##  4 Chile    1967  8858908 Americas     60.5      5107
+##  5 Chile    1972  9717524 Americas     63.4      5494
+##  6 Chile    1977 10599793 Americas     67.1      4757
+##  7 Chile    1982 11487112 Americas     70.6      5096
+##  8 Chile    1987 12463354 Americas     72.5      5547
+##  9 Chile    1992 13572994 Americas     74.1      7596
+## 10 Chile    1997 14599929 Americas     75.8     10118
+## # ... with 14 more rows</code></pre>
+<pre class="r"><code>filter(gapminder, country == &quot;Mexico&quot; | country == &quot;Chile&quot;) # does the same thing as above</code></pre>
+<pre><code>## # A tibble: 24 x 6
+##    country  year      pop continent lifeExp gdpPercap
+##    &lt;chr&gt;   &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Chile    1952  6377619 Americas     54.7      3940
+##  2 Chile    1957  7048426 Americas     56.1      4316
+##  3 Chile    1962  7961258 Americas     57.9      4519
+##  4 Chile    1967  8858908 Americas     60.5      5107
+##  5 Chile    1972  9717524 Americas     63.4      5494
+##  6 Chile    1977 10599793 Americas     67.1      4757
+##  7 Chile    1982 11487112 Americas     70.6      5096
+##  8 Chile    1987 12463354 Americas     72.5      5547
+##  9 Chile    1992 13572994 Americas     74.1      7596
+## 10 Chile    1997 14599929 Americas     75.8     10118
+## # ... with 14 more rows</code></pre>
+<pre class="r"><code># Select:
+
+select(gapminder, year, lifeExp) # select just the year and life expectancy columns</code></pre>
+<pre><code>## # A tibble: 1,704 x 2
+##     year lifeExp
+##    &lt;int&gt;   &lt;dbl&gt;
+##  1  1952    28.8
+##  2  1957    30.3
+##  3  1962    32.0
+##  4  1967    34.0
+##  5  1972    36.1
+##  6  1977    38.4
+##  7  1982    39.9
+##  8  1987    40.8
+##  9  1992    41.7
+## 10  1997    41.8
+## # ... with 1,694 more rows</code></pre>
+<pre class="r"><code>select(gapminder, -continent, -lifeExp) # can use minus to deselect certain columns</code></pre>
+<pre><code>## # A tibble: 1,704 x 4
+##    country      year      pop gdpPercap
+##    &lt;chr&gt;       &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Afghanistan  1952  8425333       779
+##  2 Afghanistan  1957  9240934       821
+##  3 Afghanistan  1962 10267083       853
+##  4 Afghanistan  1967 11537966       836
+##  5 Afghanistan  1972 13079460       740
+##  6 Afghanistan  1977 14880372       786
+##  7 Afghanistan  1982 12881816       978
+##  8 Afghanistan  1987 13867957       852
+##  9 Afghanistan  1992 16317921       649
+## 10 Afghanistan  1997 22227415       635
+## # ... with 1,694 more rows</code></pre>
+<pre class="r"><code># Combining Select and Filter
+
+gap_cambodia &lt;- filter(gapminder, country == &quot;Cambodia&quot;) # filter the country from Cambodia 
+gap_cambodia_2 &lt;- select(gap_cambodia, -continent, -lifeExp) # and remove continent and life expectancy columns..
+gap_cambodia_2 # view results</code></pre>
+<pre><code>## # A tibble: 12 x 4
+##    country   year      pop gdpPercap
+##    &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Cambodia  1952  4693836       368
+##  2 Cambodia  1957  5322536       434
+##  3 Cambodia  1962  6083619       497
+##  4 Cambodia  1967  6960067       523
+##  5 Cambodia  1972  7450606       422
+##  6 Cambodia  1977  6978607       525
+##  7 Cambodia  1982  7272485       624
+##  8 Cambodia  1987  8371791       684
+##  9 Cambodia  1992 10150094       682
+## 10 Cambodia  1997 11782962       734
+## 11 Cambodia  2002 12926707       896
+## 12 Cambodia  2007 14131858      1714</code></pre>
+</div>
+<div id="pipe-operator" class="section level2">
+<h2>Pipe Operator!</h2>
+<p>Life-changing pipe operator is the %&gt;%, and the keyboard shortcut is shift-command-n</p>
+<p>Essentially like saying “and then”</p>
+<p>This allows you to string together a bunch of functions, and have fewer intermediate variables</p>
+<p>Tell it up front what data you will be using; that is carried throughout the next specified operations strung together with pipe operators</p>
+<pre class="r"><code>gapminder %&gt;% head() # equivalent to head(gapminder)</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   country      year      pop continent lifeExp gdpPercap
+##   &lt;chr&gt;       &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Afghanistan  1952  8425333 Asia         28.8       779
+## 2 Afghanistan  1957  9240934 Asia         30.3       821
+## 3 Afghanistan  1962 10267083 Asia         32.0       853
+## 4 Afghanistan  1967 11537966 Asia         34.0       836
+## 5 Afghanistan  1972 13079460 Asia         36.1       740
+## 6 Afghanistan  1977 14880372 Asia         38.4       786</code></pre>
+<pre class="r"><code>gapminder %&gt;% head(3) # take gapminder data, and then return the first three rows; no longer need to specify the datam, because that is announced up front</code></pre>
+<pre><code>## # A tibble: 3 x 6
+##   country      year      pop continent lifeExp gdpPercap
+##   &lt;chr&gt;       &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Afghanistan  1952  8425333 Asia         28.8       779
+## 2 Afghanistan  1957  9240934 Asia         30.3       821
+## 3 Afghanistan  1962 10267083 Asia         32.0       853</code></pre>
+<pre class="r"><code>gap_cambodia &lt;- gapminder %&gt;% filter(country == &quot;Cambodia&quot;) %&gt;% select(-continent, -lifeExp) # this is same as what we did above, but is cleaner since data is announced upfront and then operations are chained
+gap_cambodia</code></pre>
+<pre><code>## # A tibble: 12 x 4
+##    country   year      pop gdpPercap
+##    &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Cambodia  1952  4693836       368
+##  2 Cambodia  1957  5322536       434
+##  3 Cambodia  1962  6083619       497
+##  4 Cambodia  1967  6960067       523
+##  5 Cambodia  1972  7450606       422
+##  6 Cambodia  1977  6978607       525
+##  7 Cambodia  1982  7272485       624
+##  8 Cambodia  1987  8371791       684
+##  9 Cambodia  1992 10150094       682
+## 10 Cambodia  1997 11782962       734
+## 11 Cambodia  2002 12926707       896
+## 12 Cambodia  2007 14131858      1714</code></pre>
 </div>
 </div>
 
