@@ -419,7 +419,7 @@ gap_cambodia_2 # view results</code></pre>
 </div>
 <div id="pipe-operator" class="section level2">
 <h2>Pipe Operator!</h2>
-<p>Life-changing pipe operator is the %&gt;%, and the keyboard shortcut is shift-command-n</p>
+<p><strong>Life-changing</strong> pipe operator: %&gt;%, the keyboard shortcut is shift-command-n</p>
 <p>Essentially like saying “and then”</p>
 <p>This allows you to string together a bunch of functions, and have fewer intermediate variables</p>
 <p>Tell it up front what data you will be using; that is carried throughout the next specified operations strung together with pipe operators</p>
@@ -457,6 +457,129 @@ gap_cambodia</code></pre>
 ## 10 Cambodia  1997 11782962       734
 ## 11 Cambodia  2002 12926707       896
 ## 12 Cambodia  2007 14131858      1714</code></pre>
+</div>
+<div id="more-tidyverse-verbs" class="section level2">
+<h2>More Tidyverse Verbs</h2>
+<p>Add variables uing <code>mutate</code>:</p>
+<pre class="r"><code>gapminder %&gt;% 
+  mutate(index = 1:nrow(gapminder)) # mutate takes dataframe and adds another column to it; index is name of new column and 1:nrow(gapminder) tells it to make rowvalues the vector 1 though the number of rows</code></pre>
+<pre><code>## # A tibble: 1,704 x 7
+##    country      year      pop continent lifeExp gdpPercap index
+##    &lt;chr&gt;       &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt;
+##  1 Afghanistan  1952  8425333 Asia         28.8       779     1
+##  2 Afghanistan  1957  9240934 Asia         30.3       821     2
+##  3 Afghanistan  1962 10267083 Asia         32.0       853     3
+##  4 Afghanistan  1967 11537966 Asia         34.0       836     4
+##  5 Afghanistan  1972 13079460 Asia         36.1       740     5
+##  6 Afghanistan  1977 14880372 Asia         38.4       786     6
+##  7 Afghanistan  1982 12881816 Asia         39.9       978     7
+##  8 Afghanistan  1987 13867957 Asia         40.8       852     8
+##  9 Afghanistan  1992 16317921 Asia         41.7       649     9
+## 10 Afghanistan  1997 22227415 Asia         41.8       635    10
+## # ... with 1,694 more rows</code></pre>
+<pre class="r"><code>gapminder %&gt;% 
+  mutate(gdp = pop * gdpPercap) # since already specified using gapminder dataset, don't have to use the $ notation to get individual dataframe column; also Rstudio will recognize now+ try to autofill colnames</code></pre>
+<pre><code>## # A tibble: 1,704 x 7
+##    country      year      pop continent lifeExp gdpPercap         gdp
+##    &lt;chr&gt;       &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+##  1 Afghanistan  1952  8425333 Asia         28.8       779  6567086330
+##  2 Afghanistan  1957  9240934 Asia         30.3       821  7585448670
+##  3 Afghanistan  1962 10267083 Asia         32.0       853  8758855797
+##  4 Afghanistan  1967 11537966 Asia         34.0       836  9648014150
+##  5 Afghanistan  1972 13079460 Asia         36.1       740  9678553274
+##  6 Afghanistan  1977 14880372 Asia         38.4       786 11697659231
+##  7 Afghanistan  1982 12881816 Asia         39.9       978 12598563401
+##  8 Afghanistan  1987 13867957 Asia         40.8       852 11820990309
+##  9 Afghanistan  1992 16317921 Asia         41.7       649 10595901589
+## 10 Afghanistan  1997 22227415 Asia         41.8       635 14121995875
+## # ... with 1,694 more rows</code></pre>
+<p>Find the maximum gdpPercap of Egypt and Vietname, and save it in a new colunm:</p>
+<pre class="r"><code>gapminder %&gt;%
+  filter(country %in% c(&quot;Egypt&quot;, &quot;Vietnam&quot;)) %&gt;% 
+  mutate(max_gdp = max(gdpPercap)) # calculates the maximum of both Egypt and Vietnam TOGETHER...</code></pre>
+<pre><code>## # A tibble: 24 x 7
+##    country  year      pop continent lifeExp gdpPercap max_gdp
+##    &lt;chr&gt;   &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+##  1 Egypt    1952 22223309 Africa       41.9      1419    5581
+##  2 Egypt    1957 25009741 Africa       44.4      1459    5581
+##  3 Egypt    1962 28173309 Africa       47.0      1693    5581
+##  4 Egypt    1967 31681188 Africa       49.3      1815    5581
+##  5 Egypt    1972 34807417 Africa       51.1      2024    5581
+##  6 Egypt    1977 38783863 Africa       53.3      2785    5581
+##  7 Egypt    1982 45681811 Africa       56.0      3504    5581
+##  8 Egypt    1987 52799062 Africa       59.8      3885    5581
+##  9 Egypt    1992 59402198 Africa       63.7      3795    5581
+## 10 Egypt    1997 66134291 Africa       67.2      4173    5581
+## # ... with 14 more rows</code></pre>
+<p>To make max_gdp for each Egype and Vietnam (within each country respectively)…</p>
+<div id="group_by" class="section level3">
+<h3><code>group_by()</code></h3>
+<pre class="r"><code>x &lt;- gapminder %&gt;%
+  filter(country %in% c(&quot;Egypt&quot;, &quot;Vietnam&quot;)) %&gt;% # could put group_by before this filter statement, but then would force R to do more work, grouping more variables (more computationally intensive)
+  group_by(country) %&gt;%  # as long as group_by before mutating, will do mutate calculations on specified groups
+  mutate(max_gdp = max(gdpPercap)) %&gt;% # ALWAYS END A GROUP_BY WITH UNGROUP, OTHER WISE WILL CONSIDER CLUSTERS IN LATER STEPS
+  ungroup()
+
+str(x)</code></pre>
+<pre><code>## Classes 'tbl_df', 'tbl' and 'data.frame':    24 obs. of  7 variables:
+##  $ country  : chr  &quot;Egypt&quot; &quot;Egypt&quot; &quot;Egypt&quot; &quot;Egypt&quot; ...
+##  $ year     : int  1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##  $ pop      : num  22223309 25009741 28173309 31681188 34807417 ...
+##  $ continent: chr  &quot;Africa&quot; &quot;Africa&quot; &quot;Africa&quot; &quot;Africa&quot; ...
+##  $ lifeExp  : num  41.9 44.4 47 49.3 51.1 ...
+##  $ gdpPercap: num  1419 1459 1693 1815 2024 ...
+##  $ max_gdp  : num  5581 5581 5581 5581 5581 ...</code></pre>
+</div>
+<div id="summarize" class="section level3">
+<h3><code>summarize()</code></h3>
+<p>Helpful to use with <code>group_by</code></p>
+<pre class="r"><code>gapminder %&gt;% 
+  group_by(country) %&gt;% 
+  mutate(gdp = pop*gdpPercap) %&gt;% 
+  summarize(max_gdp = max(gdp)) %&gt;% 
+  ungroup() %&gt;% 
+  arrange(max_gdp) # rearranged order of rows, defaults to assending order (minimum to maximum) based on maximum gdp; can make into descending order by including &quot;desc()&quot; e.g. &quot;arrange(desc(max_gdp)))&quot;</code></pre>
+<pre><code>## # A tibble: 142 x 2
+##    country                     max_gdp
+##    &lt;chr&gt;                         &lt;dbl&gt;
+##  1 Sao Tome and Principe     319014077
+##  2 Comoros                   701111696
+##  3 Guinea-Bissau             950984749
+##  4 Djibouti                 1033689705
+##  5 Gambia                   1270911775
+##  6 Liberia                  1495937378
+##  7 Central African Republic 3084613079
+##  8 Lesotho                  3158513357
+##  9 Burundi                  3669693671
+## 10 Eritrea                  3707155863
+## # ... with 132 more rows</code></pre>
+<p>Let’s now find the maximum life expectancy for countries in Asia, hint: max()</p>
+<pre class="r"><code>gapminder %&gt;%
+  filter(continent == &quot;Asia&quot;) %&gt;% 
+  group_by(country) %&gt;% 
+  summarize(max_lifeExp = max(lifeExp)) %&gt;% 
+  ungroup()</code></pre>
+<pre><code>## # A tibble: 33 x 2
+##    country         max_lifeExp
+##    &lt;chr&gt;                 &lt;dbl&gt;
+##  1 Afghanistan            43.8
+##  2 Bahrain                75.6
+##  3 Bangladesh             64.1
+##  4 Cambodia               59.7
+##  5 China                  73.0
+##  6 Hong Kong China        82.2
+##  7 India                  64.7
+##  8 Indonesia              70.6
+##  9 Iran                   71.0
+## 10 Iraq                   65.0
+## # ... with 23 more rows</code></pre>
+</div>
+<div id="other-random-notes-from-training-session" class="section level3">
+<h3>Other random notes from training session…</h3>
+<p>Shortcut: control-alt-m opens commit window for github</p>
+<p>If forget pipe operator and don’t see right away can reindent lines (“Code” &gt; “Reindent Lines”), shortcut: command I</p>
+<p>Command-arrow to jump to the end of the code line</p>
+</div>
 </div>
 </div>
 

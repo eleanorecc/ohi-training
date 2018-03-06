@@ -135,7 +135,7 @@ gap_cambodia_2 # view results
 
 ## Pipe Operator!
 
-Life-changing pipe operator is the %>%, and the keyboard shortcut is shift-command-n
+**Life-changing** pipe operator: %>%, the keyboard shortcut is shift-command-n
 
 Essentially like saying "and then"
 
@@ -151,7 +151,83 @@ gap_cambodia <- gapminder %>% filter(country == "Cambodia") %>% select(-continen
 gap_cambodia
 ```
 
+## More Tidyverse Verbs
+
+Add variables uing `mutate`:
+```{r}
+gapminder %>% 
+  mutate(index = 1:nrow(gapminder)) # mutate takes dataframe and adds another column to it; index is name of new column and 1:nrow(gapminder) tells it to make rowvalues the vector 1 though the number of rows
+
+gapminder %>% 
+  mutate(gdp = pop * gdpPercap) # since already specified using gapminder dataset, don't have to use the $ notation to get individual dataframe column; also Rstudio will recognize now+ try to autofill colnames
+
+```
+
+Find the maximum gdpPercap of Egypt and Vietname, and save it in a new colunm:
+```{r}
+gapminder %>%
+  filter(country %in% c("Egypt", "Vietnam")) %>% 
+  mutate(max_gdp = max(gdpPercap)) # calculates the maximum of both Egypt and Vietnam TOGETHER...
+  
+```
+
+To make max_gdp for each Egype and Vietnam (within each country respectively)...
+
+### `group_by()`
+
+```{r}
+x <- gapminder %>%
+  filter(country %in% c("Egypt", "Vietnam")) %>% # could put group_by before this filter statement, but then would force R to do more work, grouping more variables (more computationally intensive)
+  group_by(country) %>%  # as long as group_by before mutating, will do mutate calculations on specified groups
+  mutate(max_gdp = max(gdpPercap)) %>% # ALWAYS END A GROUP_BY WITH UNGROUP, OTHER WISE WILL CONSIDER CLUSTERS IN LATER STEPS
+  ungroup()
+
+str(x)
+```
 
 
+### `summarize()`
+
+Helpful to use with `group_by`
+
+```{r}
+gapminder %>% 
+  group_by(country) %>% 
+  mutate(gdp = pop*gdpPercap) %>% 
+  summarize(max_gdp = max(gdp)) %>% 
+  ungroup() %>% 
+  arrange(max_gdp) # rearranged order of rows, defaults to assending order (minimum to maximum) based on maximum gdp; can make into descending order by including "desc()" e.g. "arrange(desc(max_gdp)))"
+```
+
+
+Let's now find the maximum life expectancy for countries in Asia, hint: max()
+
+```{r}
+gapminder %>%
+  filter(continent == "Asia") %>% 
+  group_by(country) %>% 
+  summarize(max_lifeExp = max(lifeExp)) %>% 
+  ungroup()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Other random notes from training session...
+
+Shortcut: control-alt-m opens commit window for github
+
+If forget pipe operator and don't see right away can reindent lines ("Code" > "Reindent Lines"), shortcut: command I
+
+Command-arrow to jump to the end of the code line
 
 
