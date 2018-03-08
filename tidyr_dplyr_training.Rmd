@@ -249,13 +249,6 @@ head(rj)
 
 
 
-
-
-
-
-
-
-
 ## Other random notes from training session...
 
 Shortcut: control-alt-m opens commit window for github
@@ -263,5 +256,107 @@ Shortcut: control-alt-m opens commit window for github
 If forget pipe operator and don't see right away can reindent lines ("Code" > "Reindent Lines"), shortcut: command I
 
 Command-arrow to jump to the end of the code line
+
+
+# `tidyr`
+
+```{r}
+library(tidyr)
+gapminder <- read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv')
+gap_wide <- read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder_wide.csv')
+head(gapminder, 10)
+head(gap_wide,10)
+```
+
+In a tidy dataset: each variable has its own column, and each observation has its own row
+
+## Two Dataset Formats
+
+Wide format: have multiple observation variables with the same type of data, e.g. with repeated observations over time or multiple columns for categorical variables of same type
+
+Long format: one column for observed variable and others for ID variables
+
+For humans, wide format is often more intuitive, but long format is often more "machine readable." Mathematical functions tend to be better on long format but wide format is sometimes better for plotting.
+
+## Verbs for Tidying data with `tidyr`
+
+* `gather()` -- turns columns into rows, i.e. from long to wide, similar to melt in the `reshape` package
+* `spread()` -- turns rows to columns, i.e. from wide to long, similar to cast functions in `reshape`
+* `separate()` -- 
+* `unite()` -- 
+
+
+This gapminder dataset is somewhere between long and wide data formats, with 3 ID variables (continent, year, country) and 3 observation variables (pop, lifeExp, gdpPercap)
+
+Explore: str(gap_wide) and str(gapminder), or View(gap_wide)
+
+Now: we wnat to turn the gap_wide dataset into the gapminder dataset
+
+For long format, we want just one "key" variable that identifies the variable name and another "value" column for the data. For our gapminder data we'd like an *intermediate* format with gdpPercap, lifeExp, and pop as value columns. And we want a single column that specifies year, rather than 12x3=36 columns for each gdpPercap, lifeExp, and pop in each of the 12 years.
+
+
+### `gather()`
+
+Two ways to reshape into our desired intermediate format:
+```{r}
+gap_long <- gap_wide %>% 
+  gather(key = obstype_year, value = obs_values,
+         starts_with('pop'), starts_with('lifeExp'), starts_with('gdpPercap')) # these tell gather we want these variables left untouched; reshape around these
+# could list column names instead of the starts_with arguments, but there are too many in this case
+
+gap_long <- gap_wide %>% 
+  gather(key = obstype_year, value = obs_values,
+         -continent, -country) # here, you could instead of listing columns to include, exclude columns you don't want included in reshaping
+```
+
+This is still isn't quite what we wanted though... the obstype_year contains all the values for each gdpPercap, pop, and lifeExp, concatenated with the year of the observation, adjacent to the obs_values column which contains those actual values. To split this long format table so it has each of gdpPercap, pop, and lifeExp as a separate column containing its respective obs_value value, we need to use `separate()`
+
+### `separate()`
+```{r}
+gap_intermed <- gap_long %>% 
+  separate(obstype_year, # variable to separate
+           into = c('obs_type', 'year'), # what to separate into
+           sep = "_", # the character that separates the two pieces of information in obstype_year values
+           convert = TRUE) # ensures that the year column is an integer rather than a string
+```
+
+We now have a year column, but teh obs_year variable still contains each of our three variables!
+
+### `spread()`
+```{r}
+gap_normal <- gap_intermed %>% 
+  spread(obs_type, obs_values) # spread out the "obs_type" column by the categories/levels and fill those columns with values from the column called obs_values
+```
+
+### All Together:
+```{r}
+gap_normal <- gap_wide %>% 
+  gather(key = obstype_year, value = obs_values,
+         -country, -continent) %>% 
+  separate(obstype_year,
+           into = c('obs_type', 'year'),
+           sep = "_",
+           convert = TRUE) %>% 
+  spread(obs_type, obs_values)
+```
+
+### `unite()` (Going the Opposite Direction):
+```{r}
+gap_wide_new <- gapminder %>% 
+  gather(key = obs_type, value = obs_values,
+         -country, -continent, -year) %>%  # this give the gap_intermed dataframe
+  unite(col = var_names, obs_type, year, sep = "_") %>% # this combines obs_type and year into a single column called var_names, concatenating the contents of the two rows with an underscore
+  spread(key = var_names, value = obs_values) # spreads the data out based on the var_names column created above, fills with values from obs_values column
+```
+
+
+
+
+
+
+
+
+
+
 
 

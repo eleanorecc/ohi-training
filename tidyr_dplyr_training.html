@@ -148,12 +148,12 @@ $(document).ready(function () {
 <h1>Gapminder Wrangle</h1>
 <p>We’re going to wrangle gapminder data using <code>dplyr</code>.</p>
 <pre class="r"><code>library(tidyverse) # install.packages('tidyverse') if get error saying package not found when this is run</code></pre>
-<pre><code>## ── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
 ## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
 ## ✔ tidyr   0.8.0     ✔ stringr 1.2.0
 ## ✔ readr   1.1.1     ✔ forcats 0.2.0</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <p>When run “library(tidyverse)” get warning messages about functions masked by tidyverse</p>
@@ -645,6 +645,135 @@ head(rj)</code></pre>
 <p>Shortcut: control-alt-m opens commit window for github</p>
 <p>If forget pipe operator and don’t see right away can reindent lines (“Code” &gt; “Reindent Lines”), shortcut: command I</p>
 <p>Command-arrow to jump to the end of the code line</p>
+</div>
+</div>
+<div id="tidyr" class="section level1">
+<h1><code>tidyr</code></h1>
+<pre class="r"><code>library(tidyr)
+gapminder &lt;- read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv')</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   country = col_character(),
+##   year = col_integer(),
+##   pop = col_double(),
+##   continent = col_character(),
+##   lifeExp = col_double(),
+##   gdpPercap = col_double()
+## )</code></pre>
+<pre class="r"><code>gap_wide &lt;- read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder_wide.csv')</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   continent = col_character(),
+##   country = col_character(),
+##   pop_2002 = col_integer(),
+##   pop_2007 = col_integer()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>head(gapminder, 10)</code></pre>
+<pre><code>## # A tibble: 10 x 6
+##    country      year      pop continent lifeExp gdpPercap
+##    &lt;chr&gt;       &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Afghanistan  1952  8425333 Asia         28.8       779
+##  2 Afghanistan  1957  9240934 Asia         30.3       821
+##  3 Afghanistan  1962 10267083 Asia         32.0       853
+##  4 Afghanistan  1967 11537966 Asia         34.0       836
+##  5 Afghanistan  1972 13079460 Asia         36.1       740
+##  6 Afghanistan  1977 14880372 Asia         38.4       786
+##  7 Afghanistan  1982 12881816 Asia         39.9       978
+##  8 Afghanistan  1987 13867957 Asia         40.8       852
+##  9 Afghanistan  1992 16317921 Asia         41.7       649
+## 10 Afghanistan  1997 22227415 Asia         41.8       635</code></pre>
+<pre class="r"><code>head(gap_wide,10)</code></pre>
+<pre><code>## # A tibble: 10 x 38
+##    continent country          gdpPercap_1952 gdpPercap_1957 gdpPercap_1962
+##    &lt;chr&gt;     &lt;chr&gt;                     &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;
+##  1 Africa    Algeria                    2449           3014           2551
+##  2 Africa    Angola                     3521           3828           4269
+##  3 Africa    Benin                      1063            960            949
+##  4 Africa    Botswana                    851            918            984
+##  5 Africa    Burkina Faso                543            617            723
+##  6 Africa    Burundi                     339            380            355
+##  7 Africa    Cameroon                   1173           1313           1400
+##  8 Africa    Central African…           1071           1191           1193
+##  9 Africa    Chad                       1179           1308           1390
+## 10 Africa    Comoros                    1103           1211           1407
+## # ... with 33 more variables: gdpPercap_1967 &lt;dbl&gt;, gdpPercap_1972 &lt;dbl&gt;,
+## #   gdpPercap_1977 &lt;dbl&gt;, gdpPercap_1982 &lt;dbl&gt;, gdpPercap_1987 &lt;dbl&gt;,
+## #   gdpPercap_1992 &lt;dbl&gt;, gdpPercap_1997 &lt;dbl&gt;, gdpPercap_2002 &lt;dbl&gt;,
+## #   gdpPercap_2007 &lt;dbl&gt;, lifeExp_1952 &lt;dbl&gt;, lifeExp_1957 &lt;dbl&gt;,
+## #   lifeExp_1962 &lt;dbl&gt;, lifeExp_1967 &lt;dbl&gt;, lifeExp_1972 &lt;dbl&gt;,
+## #   lifeExp_1977 &lt;dbl&gt;, lifeExp_1982 &lt;dbl&gt;, lifeExp_1987 &lt;dbl&gt;,
+## #   lifeExp_1992 &lt;dbl&gt;, lifeExp_1997 &lt;dbl&gt;, lifeExp_2002 &lt;dbl&gt;,
+## #   lifeExp_2007 &lt;dbl&gt;, pop_1952 &lt;dbl&gt;, pop_1957 &lt;dbl&gt;, pop_1962 &lt;dbl&gt;,
+## #   pop_1967 &lt;dbl&gt;, pop_1972 &lt;dbl&gt;, pop_1977 &lt;dbl&gt;, pop_1982 &lt;dbl&gt;,
+## #   pop_1987 &lt;dbl&gt;, pop_1992 &lt;dbl&gt;, pop_1997 &lt;dbl&gt;, pop_2002 &lt;int&gt;,
+## #   pop_2007 &lt;int&gt;</code></pre>
+<p>In a tidy dataset: each variable has its own column, and each observation has its own row</p>
+<div id="two-dataset-formats" class="section level2">
+<h2>Two Dataset Formats</h2>
+<p>Wide format: have multiple observation variables with the same type of data, e.g. with repeated observations over time or multiple columns for categorical variables of same type</p>
+<p>Long format: one column for observed variable and others for ID variables</p>
+<p>For humans, wide format is often more intuitive, but long format is often more “machine readable.” Mathematical functions tend to be better on long format but wide format is sometimes better for plotting.</p>
+</div>
+<div id="verbs-for-tidying-data-with-tidyr" class="section level2">
+<h2>Verbs for Tidying data with <code>tidyr</code></h2>
+<ul>
+<li><code>gather()</code> – turns columns into rows, i.e. from long to wide, similar to melt in the <code>reshape</code> package</li>
+<li><code>spread()</code> – turns rows to columns, i.e. from wide to long, similar to cast functions in <code>reshape</code></li>
+<li><code>separate()</code> –</li>
+<li><code>unite()</code> –</li>
+</ul>
+<p>This gapminder dataset is somewhere between long and wide data formats, with 3 ID variables (continent, year, country) and 3 observation variables (pop, lifeExp, gdpPercap)</p>
+<p>Explore: str(gap_wide) and str(gapminder), or View(gap_wide)</p>
+<p>Now: we wnat to turn the gap_wide dataset into the gapminder dataset</p>
+<p>For long format, we want just one “key” variable that identifies the variable name and another “value” column for the data. For our gapminder data we’d like an <em>intermediate</em> format with gdpPercap, lifeExp, and pop as value columns. And we want a single column that specifies year, rather than 12x3=36 columns for each gdpPercap, lifeExp, and pop in each of the 12 years.</p>
+<div id="gather" class="section level3">
+<h3><code>gather()</code></h3>
+<p>Two ways to reshape into our desired intermediate format:</p>
+<pre class="r"><code>gap_long &lt;- gap_wide %&gt;% 
+  gather(key = obstype_year, value = obs_values,
+         starts_with('pop'), starts_with('lifeExp'), starts_with('gdpPercap')) # these tell gather we want these variables left untouched; reshape around these
+# could list column names instead of the starts_with arguments, but there are too many in this case
+
+gap_long &lt;- gap_wide %&gt;% 
+  gather(key = obstype_year, value = obs_values,
+         -continent, -country) # here, you could instead of listing columns to include, exclude columns you don't want included in reshaping</code></pre>
+<p>This is still isn’t quite what we wanted though… the obstype_year contains all the values for each gdpPercap, pop, and lifeExp, concatenated with the year of the observation, adjacent to the obs_values column which contains those actual values. To split this long format table so it has each of gdpPercap, pop, and lifeExp as a separate column containing its respective obs_value value, we need to use <code>separate()</code></p>
+</div>
+<div id="separate" class="section level3">
+<h3><code>separate()</code></h3>
+<pre class="r"><code>gap_intermed &lt;- gap_long %&gt;% 
+  separate(obstype_year, # variable to separate
+           into = c('obs_type', 'year'), # what to separate into
+           sep = &quot;_&quot;, # the character that separates the two pieces of information in obstype_year values
+           convert = TRUE) # ensures that the year column is an integer rather than a string</code></pre>
+<p>We now have a year column, but teh obs_year variable still contains each of our three variables!</p>
+</div>
+<div id="spread" class="section level3">
+<h3><code>spread()</code></h3>
+<pre class="r"><code>gap_normal &lt;- gap_intermed %&gt;% 
+  spread(obs_type, obs_values) # spread out the &quot;obs_type&quot; column by the categories/levels and fill those columns with values from the column called obs_values</code></pre>
+</div>
+<div id="all-together" class="section level3">
+<h3>All Together:</h3>
+<pre class="r"><code>gap_normal &lt;- gap_wide %&gt;% 
+  gather(key = obstype_year, value = obs_values,
+         -country, -continent) %&gt;% 
+  separate(obstype_year,
+           into = c('obs_type', 'year'),
+           sep = &quot;_&quot;,
+           convert = TRUE) %&gt;% 
+  spread(obs_type, obs_values)</code></pre>
+</div>
+<div id="unite-going-the-opposite-direction" class="section level3">
+<h3><code>unite()</code> (Going the Opposite Direction):</h3>
+<pre class="r"><code>gap_wide_new &lt;- gapminder %&gt;% 
+  gather(key = obs_type, value = obs_values,
+         -country, -continent, -year) %&gt;%  # this give the gap_intermed dataframe
+  unite(col = var_names, obs_type, year, sep = &quot;_&quot;) %&gt;% # this combines obs_type and year into a single column called var_names, concatenating the contents of the two rows with an underscore
+  spread(key = var_names, value = obs_values) # spreads the data out based on the var_names column created above, fills with values from obs_values column</code></pre>
+</div>
 </div>
 </div>
 
