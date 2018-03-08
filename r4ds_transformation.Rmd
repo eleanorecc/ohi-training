@@ -78,7 +78,25 @@ flights[is.na(flights$dep_time) == TRUE,] # with base R
 filter(flights, is.na(dep_time)) # with tidyverse
 ```
 
+*** `arrange`***
 
+```{r}
+arrange(flights, desc(arr_delay)) # flights arranged in order of longest to shortest arrival delay; default is assending order
+```
+
+### `select`
+
+Can combine these additional functions with select to make the process easier!
+
+* `starts_with`
+* `ends_with`
+* `contains`
+* `matches`
+* `num_range`
+
+```{r}
+
+```
 
 
 
