@@ -84,6 +84,11 @@ filter(flights, is.na(dep_time)) # with tidyverse
 arrange(flights, desc(arr_delay)) # flights arranged in order of longest to shortest arrival delay; default is assending order
 ```
 
+```{r}
+#arrange(flights, desc())
+```
+
+
 ### `select`
 
 Can combine these additional functions with select to make the process easier!
