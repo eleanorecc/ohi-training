@@ -88,38 +88,45 @@ for(cntry in country_europe){
 }
 
 
+# conditional statements with if..., if... else..., and ifelse...
+
+est <- readr::read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/countries_estimated.csv')
+gapminder_est <- left_join(gapminder, est)
+
+## create a list of countries
+gap_europe <- gapminder_est %>%
+  filter(continent == "Europe") %>%
+  mutate(gdpPercap_cummean = dplyr::cummean(gdpPercap))
+
+country_list <- unique(gap_europe$country) 
+
+for(cntry in country_list){
+  gap_to_plot <- gap_europe %>% 
+    filter(country == cntry)
+  
+  print(paste("Plotting", cntry, sep = " "))
+  
+  my_plot <- ggplot(data = gap_to_plot, aes(x = year, y = gdpPercap_cummean)) +
+    geom_point() +
+    labs(x = "\n Year", y = "GDP per Capita, Cumulative Mean \n", title = paste(cntry, "GDP per Capita", sep = " "))
+  
+  if(any(gap_to_plot$estimated == "yes")){
+    print(paste(cntry, "data are estimated", sep = " "))
+    my_plot <- my_plot + labs(subtitle = "Estimated Data")
+    } else {
+      print(paste(cntry, "data are reported", sep = " "))
+      my_plot <- my_plot + labs(subtitle = "Reported Data")
+    } 
+  
+  ggsave(filename = paste("./programming_tutorial_plots/figures_europe/", cntry, "_gdpPercap_cummean.png", sep = ""), plot = my_plot)
+
+} 
 
 
+# importing and installing packages
+library(devtools)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# some answers to some data science questions...
+https://peerj.com/collections/50-practicaldatascistats/
 
 
