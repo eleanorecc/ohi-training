@@ -47,16 +47,13 @@ yvar_name <- "GDP per Capita"
 plot_folder <- "programming_tutorial_plots"
 
 for(cntry in country_list){
-  
   gap_to_plot <- gapminder %>% filter(country == cntry)
-  
   my_plot <- ggplot(data = gap_to_plot, aes(cntry, yvar)) +
     geom_point() +
     labs(x = "Year", y = yvar_name, title = paste(cntry, yvar_name, sep = " ")) +
     theme_bw()
   
   ggsave(filename = paste(plot_folder, paste(cntry, paste(yvar, "png", sep = "."), sep = "_"), sep = "/"), plot = my_plot)
-  
   print(paste("created plot for", cntry, sep = " "))
   
 }
@@ -111,10 +108,10 @@ for(cntry in country_list){
     labs(x = "\n Year", y = "GDP per Capita, Cumulative Mean \n", title = paste(cntry, "GDP per Capita", sep = " "))
   
   if(any(gap_to_plot$estimated == "yes")){
-    print(paste(cntry, "data are estimated", sep = " "))
+    print(paste(cntry, "some data are estimated", sep = " "))
     my_plot <- my_plot + labs(subtitle = "Estimated Data")
     } else {
-      print(paste(cntry, "data are reported", sep = " "))
+      print(paste(cntry, "all data are reported", sep = " "))
       my_plot <- my_plot + labs(subtitle = "Reported Data")
     } 
   
