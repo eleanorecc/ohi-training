@@ -85,7 +85,7 @@ arrange(flights, desc(arr_delay)) # flights arranged in order of longest to shor
 ```
 
 ```{r}
-#arrange(flights, desc())
+arrange(flights, desc(arr_delay))
 ```
 
 
@@ -100,10 +100,16 @@ Can combine these additional functions with select to make the process easier!
 * `num_range`
 
 ```{r}
-
+select(flights, -(year:day)) # remove columns year through day
+select(flights, c(contains("arr"), flight, carrier, year:day))
 ```
 
 
+***`mutate` and related functions***
+
+```{r}
+
+```
 
 
 
